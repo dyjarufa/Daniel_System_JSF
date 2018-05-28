@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	
+<h:head>
+<title>Consulta</title>
+</h:head>
+<h:body>
+	<p:panel header="Consulta de Clientes">
+
+		<h:link value="Incluir" outcome="cadastro" />
+		&nbsp; | &nbsp;
+		<h:link value="Consultar" outcome="consultacliente" />
+		<p:separator />
+		
+			<p:panelGrid columns="2">
+				<p:outputLabel value="CPF:" for="cpf" />
+					<p:inputMask id="cpf" mask="999.999.999-99" size="20"
+						value="#{clienteBean.cliente.cpf}">
+					</p:inputMask>
+					
+					
+					<p:outputLabel value="Nome:" for="nome" />
+					<p:inputText id="nome" value="#{clienteBean.cliente.nome}">
+						
+					</p:inputText>
+					
+					<p:commandButton value="Pesquisar"	actionListener="#{clienteBean.filtrar}" update=":formConsulta">
+							<f:param id="filter" name="filter" value="#{cli.cpf}" />
+						</p:commandButton>
+					
+			</p:panelGrid>
+
+		<h:form id="formConsulta">
+			<p:growl for="formConsulta" />
+			
+
+			<p:dataTable id="tabela" emptyMessage="Nenhum cliente cadastrado."
+				value="#{clienteBean.listaCli}" var="cli" paginator="true" rows="3">
+
+				<f:facet name="header">
+					<h:outputText value="Relação de Clientes" />
+				</f:facet>
+				
+				<p:column headerText="Código">
+					<h:outputText value="#{cli.codCliente}" />
+				</p:column>
+
+				<p:column headerText="CPF">
+					<h:outputText value="#{cli.cpf}" />
+				</p:column>
+
+				<p:column headerText="Nome">
+					<h:outputText value="#{cli.nome}" />
+				</p:column>
+
+				<p:column headerText="Email">
+					<h:outputText value="#{cli.email}" />
+				</p:column>
+
+				<p:column headerText="Data Nascimento">
+					<h:outputText value="#{cli.dataNascimento}" />
+				</p:column>
+
+				<p:column headerText="Sexo">
+					<h:outputText value="#{cli.sexo}" />
+				</p:column>
+
+				<p:column headerText="Eatado Civil">
+					<h:outputText value="#{cli.estadoCivil}" />
+				</p:column>
+
+				<p:column headerText="Ativo">
+					<h:outputText value="#{cli.ativo}" />
+				</p:column>
+
+				<p:column headerText="Opções">
+
+					<p:commandButton icon="ui-icon-pencil" title="Editar"
+						onclick="PF('janelaEdit').show();" update=":formAlterar">
+						<f:setPropertyActionListener value="#{cli}"
+							target="#{clienteBean.cliente}"/>
+					</p:commandButton>
+					
+					&nbsp;
+					
+					<p:commandButton icon="ui-icon-trash" title="Excluir"
+						actionListener="#{clienteBean.excluirCliente}"
+						update=":formConsulta">
+						<f:param id="cod" name="cod" value="#{cli.codCliente}" />
+
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</p:panel>
+
+
+	<p:dialog header="Edição de Clientes" widgetVar="janelaEdit"
+		height="auto" width="auto" resizable="false" modal="true">
+
+		<h:form id="formAlterar">
+			<h:inputHidden id="codigo" value="#{clienteBean.cliente.codCliente}" />
+			<p:panelGrid columns="2">
+
+				<p:outputLabel value="CPF:" for="cpf" />
+					<p:inputMask id="cpf" mask="999.999.999-99" size="20"
+						value="#{clienteBean.cliente.cpf}" required="true"	>
+						
+					</p:inputMask>
+
+				<p:outputLabel value="Nome:" for="nome" />
+					<h:inputText id="nome" value="#{clienteBean.cliente.nome}" required="true" >
+						
+					</h:inputText>
+				
+				<p:outputLabel value="Email" for="email" />
+				<p:inputText id="email" size="30" value="#{clienteBean.cliente.email}" />
+				
+				<p:outputLabel value="Data de Nascimento:" for="dataNascimento" />
+				<p:inputText id="dataNascimento" size="30" value="#{clienteBean.cliente.dataNascimento}"/>
+
+				<p:outputLabel value="Sexo" for="sexo" />
+				<p:selectOneRadio id="sexo" value="#{clienteBean.cliente.sexo}">
+					<f:selectItem itemLabel="Feminino" itemValue="feminino" />
+					<f:selectItem itemLabel="Masculino" itemValue="masculino" />
+				</p:selectOneRadio>
+				
+				<p:outputLabel for="estadoCivil" value="Estado Civil:" />
+					<p:selectOneMenu id="estadoCivil" value="#{clienteBean.cliente.estadoCivil}" style="width:125px" required="true">
+						<f:selectItem itemLabel="Selecione" itemValue="" />
+						<f:selectItem itemLabel="Casado" itemValue="Casado" />
+						<f:selectItem itemLabel="Solteiro" itemValue="Solteiro" />
+						<f:selectItem itemLabel="Divorciado" itemValue="Divorciado" />
+						<f:selectItem itemLabel="Viuvo" itemValue="Viuvo" />
+						
+					</p:selectOneMenu>
+				
+				<p:outputLabel value="Ativo:" for="ativo"/>
+					<h:selectBooleanCheckbox id="ativo"	value="#{clienteBean.cliente.ativo}"  required="true" >
+					</h:selectBooleanCheckbox>
+
+				<p:commandButton value="Alterar" action="#{clienteBean.alterar}" update=":formConsulta" onclick="PF('janelaEdit').hidden();"/>
+			</p:panelGrid>
+		</h:form>
+	</p:dialog>
+</h:body>
+</html>
